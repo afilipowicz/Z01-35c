@@ -1,5 +1,5 @@
 import random
-import prettytable
+from prettytable import PrettyTable
 
 rock = ("👊", "rock")
 paper = ("✋", "paper")
@@ -9,7 +9,7 @@ playerPoints, computerPoints = 0, 0
 
 rounds = int(input("How many rounds do you want to play? "))
 
-for x in range(rounds):
+for _ in range(rounds):
     player = ""
     while player not in ["rock", "paper", "scissors"]:
         player = input("rock, paper, scissors? ").lower()
@@ -26,6 +26,6 @@ for x in range(rounds):
         playerPoints += 1
         print("you win")
 
-results = prettytable.PrettyTable(["player score", "computer score", "draws"])
+results = PrettyTable(["player score", "computer score", "draws"])
 results.add_row([playerPoints, computerPoints, rounds - playerPoints - computerPoints])
 print(results)

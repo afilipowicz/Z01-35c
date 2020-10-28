@@ -4,20 +4,39 @@ import os
 args = sys.argv
 path = args[1]
 
-spacer = " "
+spacer      = "    "
+lineSpacer  = "│   "
+middle      = "├───"
+end         = "└───"
 
-def listContents(path, count = 0, recursively = True):
-    with os.scandir(path) as it:
-        for entry in it:
-            if entry.is_dir():
-                prettyPrint(entry.name, count)
-                count += 2
-                listContents(entry.path, count)
-                count -= 2
-            else:
-                prettyPrint(entry.name, count)
+def printContents(path, buffer = list()):
+    for entry, isLast in preview(os.scandir(path)):
+        prettyPrint(entry.name, buffer, isLast)
 
-def prettyPrint(string, count):
-    print(f"{spacer * count}{string}")
+        if entry.is_dir():
+            buffer.append(isLast)
+            printContents(entry.path, buffer)
+    if buffer:
+        buffer.pop()
 
-listContents(path)
+def prettyPrint(name, buffer, isLast = False):
+    spacers = "".join(map(bufferToSpacers, buffer))
+    lastElement = end if isLast else middle
+    print(f"{spacers}{lastElement}{name}")
+
+def bufferToSpacers(element):
+    return lineSpacer if element == False else spacer
+
+def preview(iterable):
+    iterator = iter(iterable)
+    try:
+        current = next(iterator)
+    except StopIteration:
+        return
+
+    for el in iterator:
+        yield current, False
+        current = el
+    yield current, True
+
+printContents(path)

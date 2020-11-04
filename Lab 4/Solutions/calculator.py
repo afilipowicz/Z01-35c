@@ -1,5 +1,5 @@
 from tokenizer import sanitize_expression, parse, Token
-
+from visualizer import printContents
 
 OPERATORS = ["+", "-", "*", "/"]
 
@@ -20,6 +20,15 @@ class Node:
         right = self.right.description() if isinstance(self.right, Node) else ""
 
         return f"{left}{right}{self.value}" if reverse else f"{self.value}{left}{right}"
+
+    def list(self):
+        list = [self.value]
+        if isinstance(self.left, Node):
+            list.append(self.left.list())
+        if isinstance(self.right, Node):
+            list.append(self.right.list())
+
+        return list
 
     def evaluate(self):
         try:
@@ -81,3 +90,5 @@ while True:
         root = build_tree(expression)
         print(root.evaluate())
         print(root.description())
+        print(root.list())
+        printContents(root.list())

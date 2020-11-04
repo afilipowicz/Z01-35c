@@ -1,23 +1,3 @@
-# parsuj(ciąg znaków):
-#     idź po znakach
-#     jeśli " " pomiń
-#     jeśli cyfra dodaj do stosu nodeów node bez dzieci
-#     jeśli nawias otwarty dodaj do stosu opertatorów
-#     jeśli nawias zamknięty:
-#         dopóki nie znajdziesz nawiasu otwierającego weź operator ze stosu operatorów:
-#             dodaj_node(stos nodeów, operator)
-#             obsłuż error jeśli nie znalazłeś nawiasu otwierającego
-#     jeśli operator:
-#         dopóki jest jakiś oprator na stosie operatorów:
-#             jeśli operator ze stosu jest równy lub ważniejszy od aktualnego:
-#                 weź ten operator (wyjmij ze stosu)
-#                 dodaj_node(stos nodeów, ten operator)
-#         dodaj operator do stosu operatorów
-#
-#     dopóki stos operatorów nie jest pusty weź operator ze stosu operatorów:
-#         dodaj_node(stos nodeów, operator)
-#
-#     zwróć ostatni element ze stosu nodeów // który będzie rootem drzewa
 
 OPERATORS = ["+", "-", "*", "/"]
 
@@ -54,7 +34,6 @@ class Node:
 def add_node(stack, operator):
     right = stack.pop()
     left = stack.pop()
-    print(f"{left.value} {operator} {right.value}")
     stack.append(Node(operator, left, right))
 
 def build_tree(expression):
@@ -63,16 +42,12 @@ def build_tree(expression):
 
     for character in expression:
         if character == " ":
-            # print("spacja")
             continue
         elif character.isnumeric():
-            # print(f"liczba {character}")
             tree.append(Node(character))
         elif character == "(":
-            # print("nawias otwarty")
             operatorStack.append(character)
         elif character == ")":
-            # print("nawias zamknięty")
             while operatorStack:
                 operator = operatorStack.pop()
                 if operator != "(":
@@ -80,7 +55,6 @@ def build_tree(expression):
                 else:
                     break
         elif character in OPERATORS:
-            # print(f"operator {character}")
             while operatorStack:
                 nextOperator = operatorStack[-1]
                 if nextOperator in OPERATORS and precedence(nextOperator) >= precedence(character):

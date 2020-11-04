@@ -1,3 +1,5 @@
+from tokenizer import sanitize_expression, parse, Token
+
 
 OPERATORS = ["+", "-", "*", "/"]
 
@@ -20,16 +22,20 @@ class Node:
         return f"{left}{right}{self.value}" if reverse else f"{self.value}{left}{right}"
 
     def evaluate(self):
-        if self.value.isnumeric():
-            return int(self.value)
-        elif self.value == "+":
-            return self.left.evaluate() + self.right.evaluate()
-        elif self.value == "-":
-            return self.left.evaluate() - self.right.evaluate()
-        elif self.value == "*":
-            return self.left.evaluate() * self.right.evaluate()
-        elif self.value == "/":
-            return self.left.evaluate() / self.right.evaluate()
+        try:
+            value = float(self.value)
+            return value
+        except:
+            l = float(self.left.evaluate())
+            r = float(self.right.evaluate())
+            if self.value == "+":
+                return l + r
+            elif self.value == "-":
+                return l - r
+            elif self.value == "*":
+                return l * r
+            elif self.value == "/":
+                return l / r
 
 def add_node(stack, operator):
     right = stack.pop()
@@ -40,21 +46,19 @@ def build_tree(expression):
     tree = []
     operatorStack = []
 
-    for character in expression:
-        if character == " ":
-            continue
-        elif character.isnumeric():
+    for (token, character) in parse(expression):
+        if token is Token.NUMBER:
             tree.append(Node(character))
-        elif character == "(":
+        elif token is Token.OPEN_BRACKET:
             operatorStack.append(character)
-        elif character == ")":
+        elif token is Token.CLOSE_BRACKET:
             while operatorStack:
                 operator = operatorStack.pop()
                 if operator != "(":
                     add_node(tree, operator)
                 else:
                     break
-        elif character in OPERATORS:
+        elif token is Token.OPERATOR:
             while operatorStack:
                 nextOperator = operatorStack[-1]
                 if nextOperator in OPERATORS and precedence(nextOperator) >= precedence(character):
@@ -69,7 +73,8 @@ def build_tree(expression):
     return tree.pop()
 
 while True:
-    expression = input("Expression: ")
+    expression = sanitize_expression(input("Expression: "))
+
     if expression == "exit":
         break
     else:

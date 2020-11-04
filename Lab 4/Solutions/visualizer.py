@@ -6,7 +6,7 @@ end         = "└───"
 def printContents(characters, buffer = list()):
     for e, isLast in preview(characters):
         isList = isinstance(e, list)
-        prettyPrint(e[0] if isList and len(e) > 1 else e, buffer, isLast)
+        prettyPrint(e[0] if isList else e, buffer, isLast)
 
         if isList:
             buffer.append(isLast)

@@ -88,7 +88,7 @@ while True:
         break
     else:
         root = build_tree(expression)
-        print(root.evaluate())
+        print(f"result = {root.evaluate()}")
         print(root.description())
         print(root.list())
-        printContents(root.list())
+        printContents([root.list()])

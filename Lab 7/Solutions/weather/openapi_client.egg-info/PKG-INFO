@@ -1,0 +1,12 @@
+Metadata-Version: 1.0
+Name: openapi-client
+Version: 1.0.0
+Summary: Daily Forecast API
+Home-page: UNKNOWN
+Author: OpenAPI Generator community
+Author-email: team@openapitools.org
+License: This product includes software originally developed by IBM Corporation, Copyright 2016 IBM Corp.
+Description:     The daily forecast API returns the geocode weather forecasts for the current day up to the days duration in the API endpoint. The daily forecast product can contain multiple days of daily forecasts for each location. Each day of a forecast can contain up to (3) \&quot;temporal segments\&quot; meaning three separate forecasts. For any given forecast day we offer day, night, and a 24-hour forecast (daily summary).   • Standard HTTP Cache-Control headers are used to define caching length. The TTL value is provided in the HTTP Header as an absolute time value using the “Expires” parameter. Example:  “Expires: Fri, 12 Jul 2013 12:00:00 GMT”.   • REQUIRED: HEADER Accept-Encoding: gzip  • All requests to the API’s should request that the response be compressed. Supported encoding format is: gzip  • PLEASE NOTE: The Day object will no longer appear in the API after 3:00pm Local Apparent Time. At 3pm Local Apparent Time, we recommend that your application no longer displays the Day object.  # noqa: E501
+            
+Keywords: OpenAPI,OpenAPI-Generator,Daily Forecast API
+Platform: UNKNOWN

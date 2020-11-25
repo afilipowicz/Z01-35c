@@ -7,7 +7,7 @@ from geopy.geocoders import Nominatim
 import json
 from datetime import datetime
 from PIL import Image,ImageTk
-import io
+import shutil
 
 def plot(data):
     plt.style.use("ggplot")
@@ -57,7 +57,7 @@ def getWeatherData():
     dayData = list(map(getDayData, daily[:3]))
     displayDaily(dayData)
 
-    gui.geometry("400x200")
+    gui.geometry("500x300")
     gui.update()
 
 def displayDaily(data):
@@ -70,12 +70,27 @@ def displayHourly(data):
     gui.geometry("600x700")
     gui.update()
 
+def getImage(name):
+    imageUrl = f"http://openweathermap.org/img/wn/{name}@2x.png"
+    filename = imageUrl.split("/")[-1]
+
+    request = requests.get(imageUrl, stream=True)
+    request.raw.decode_content = True
+    with open(filename,'wb') as f:
+        shutil.copyfileobj(request.raw, f)
+    img = Image.open(filename)
+    img.resize((50,50), Image.ANTIALIAS)
+
+    return ImageTk.PhotoImage(img)
+
 class DayWidget(Frame):
     def __init__(self, parent, day, *args, **kwargs):
         Frame.__init__(self, parent, *args, **kwargs)
         self.title = Label(self, text=day[0])
         self.temp = Label(self, text=f"{day[1]}℃")
-        self.image = Frame(self, width=50, height=50, bg="gray")#Label(self, image=getImage(day[2]))
+        img = getImage(day[2])
+        self.image = Label(self, image=img)
+        self.image.image = img
         self.wind = Label(self, text=f"{day[3]} m/s")
         self.button = Button(self, text="details", command=lambda: displayHourly(day[4]))
 
@@ -87,7 +102,7 @@ class DayWidget(Frame):
 
 gui = Tk()
 gui.title("Weather")
-gui.geometry("400x200")
+gui.geometry("300x50")
 
 searchFrame = Frame(gui)
 forecastFrame = Frame(gui)
@@ -101,11 +116,5 @@ city = Entry(searchFrame)
 searchButton = Button(searchFrame, text="Search", command=getWeatherData)
 city.pack(side="left")
 searchButton.pack(side="left", padx = (10,10), ipadx = (10))
-
-forecastLabel = Label(forecastFrame, text="Forecast")
-forecastLabel.grid(row=0, sticky="w")
-# for i in range(3):
-#     dayWidget = DayWidget(forecastFrame, i, width=200, height=200, bg="red")
-#     dayWidget.grid(row=1, column=i, padx = (20,20))
 
 gui.mainloop()
